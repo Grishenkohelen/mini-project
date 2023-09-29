@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="post-details.css" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7fde453b20.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="box">
+    <div class="menu">
+        <i class="fa-solid fa-bars" id="menuIcon"></i>
+        <div id="hrefs">
+
+            <a class="hrefMenu" id="index">users</a>
+            <a class="hrefMenu" id="userHref">user details</a>
+            <a class="hrefMenu" id="postHref">post details</a>
+
+        </div>
+    </div>
+</div>
+
+<div id="post">
+
+</div>
+
+<div id="comments">
+
+</div>
+
+<script>
+    let address = window.location.href;
+    let id;
+    if (address.slice(address.length-2) == `=${address.slice(address.length-1)}`) {
+        id = address.slice(address.length - 1)
+    }
+    else {
+        id = address.slice(address.length - 2)
+    }
+
+    localStorage.setItem('post-details',JSON.stringify(id))
+    let index = document.getElementById('index');
+    let users = document.getElementById('userHref');
+    let posts = document.getElementById('postHref');
+
+    index.setAttribute('href', `/mini-project/index/index.html`);
+    posts.setAttribute('href', `/mini-project/post-details/post-details.html?id=${JSON.parse(localStorage.getItem('post-details'))}`);
+    users.setAttribute('href', `/mini-project/user-details/user-details.html?id=${JSON.parse(localStorage.getItem('user-details'))}`);
+
+    fetch(`http://jsonplaceholder.typicode.com/posts/${id}`)
+        .then(el => el.json())
+        .then(res => {
+            let div = document.getElementById('post');
+
+            let h3 = document.createElement('h3');
+            h3.innerText = res.id + '.' + res.title;
+
+            let userId = document.createElement('p');
+            userId.innerText = 'userId: ' + res.userId;
+
+            let body = document.createElement('p');
+            body.innerText = 'body: ' + res.body;
+
+            div.append(h3, userId, body);
+
+        })
+
+
+
+    fetch(`http://jsonplaceholder.typicode.com/posts/${id}/comments`)
+        .then(el => el.json())
+        .then(res => {
+            let divComments = document.getElementById('comments');
+
+            let h4 = document.createElement('h4');
+            h4.innerText = 'Comments';
+            divComments.appendChild(h4);
+
+            res.forEach((val) => {
+                let comment = document.createElement('div');
+                divComments.appendChild(comment);
+
+                let id = document.createElement('h5');
+                id.innerText = val.id + '.' + val.name;
+
+                let email = document.createElement('p');
+                email.innerText = val.email;
+
+                let body = document.createElement('p');
+                body.innerText = val.body;
+
+                comment.append(id, email, body);
+            })
+        })
+
+
+
+</script>
+
+</body>
+</html>

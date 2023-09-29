@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="index.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/7fde453b20.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+
+<div class="menu">
+  <i class="fa-solid fa-bars" id="menuIcon"></i>
+  <div id="hrefs">
+
+    <a href="/index/index.html" class="hrefMenu" id="index">users</a>
+    <a href="/user-details/user-details.html" class="hrefMenu" id="userHref">user details</a>
+    <a href="/post-details/post-details.html" class="hrefMenu" id="postHref">post details</a>
+
+  </div>
+</div>
+
+<div id="wrapper">
+</div>
+
+<script>
+
+  let index = document.getElementById('index');
+  let users = document.getElementById('userHref');
+  let posts = document.getElementById('postHref');
+
+  index.setAttribute('href', `/mini-project/index/index.html`);
+  posts.setAttribute('href', `/mini-project/post-details/post-details.html?id=${JSON.parse(localStorage.getItem('post-details'))}`);
+  users.setAttribute('href', `/mini-project/user-details/user-details.html?id=${JSON.parse(localStorage.getItem('user-details'))}`);
+
+
+  fetch(`http://jsonplaceholder.typicode.com/users`)
+          .then(el => el.json())
+          .then(res => {
+            let div = document.getElementById('wrapper');
+
+            res.forEach((el)=>{
+              let divUser = document.createElement('div');
+              divUser.classList.add('divUser');
+
+              let h3 = document.createElement('h3');
+              h3.innerText = el.id + '.' + el.name;
+              h3.id = 'name';
+
+              let button = document.createElement('button');
+              button.innerText = 'go to user';
+              button.onclick = () => window.location.href = `/mini-project/user-details/user-details.html?id=${el.id}`;
+              button.id = 'btn';
+
+              divUser.append(h3,button);
+              div.appendChild(divUser);
+            })
+          })
+
+</script>
+</body>
+</html>

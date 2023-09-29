@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="user-details.css" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/7fde453b20.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="menu">
+  <i class="fa-solid fa-bars" id="menuIcon"></i>
+  <div id="hrefs">
+
+    <a href="/index/index.html" class="hrefMenu" id="index">users</a>
+    <a href="/user-details/user-details.html" class="hrefMenu" id="userHref">user details</a>
+    <a href="/post-details/post-details.html" class="hrefMenu" id="postHref">post details</a>
+
+  </div>
+</div>
+
+<div id="wrapper">
+
+</div>
+
+<script>
+
+  let show = 0;
+
+  let wrapper = document.getElementById('wrapper');
+
+  let address = window.location.href;
+  let id;
+  if (address.slice(address.length - 1) == '0') {
+    id = address.slice(address.length - 2)
+  }
+  else {
+    id = address.slice(address.length - 1)
+  }
+
+  localStorage.setItem('user-details', JSON.stringify(id));
+  let index = document.getElementById('index');
+  let users = document.getElementById('userHref');
+  let posts = document.getElementById('postHref');
+
+  index.setAttribute('href', `/mini-project/index/index.html`);
+  posts.setAttribute('href', `/mini-project/post-details/post-details.html?id=${JSON.parse(localStorage.getItem('post-details'))}`);
+  users.setAttribute('href', `/mini-project/user-details/user-details.html?id=${JSON.parse(localStorage.getItem('user-details'))}`);
+
+  fetch(`http://jsonplaceholder.typicode.com/users/${id}`)
+          .then(el => el.json())
+          .then(res => {
+            let div = document.createElement('div');
+            wrapper.appendChild(div);
+            div.id='userInfo'
+
+            let h3 = document.createElement('h3');
+            h3.innerText = res.id + '.' + res.name;
+            h3.id = 'name'
+
+            let username = document.createElement('p');
+            username.innerText = 'username: ' + res.username;
+
+            let email = document.createElement('p');
+            email.innerText = 'email: ' + res.email;
+
+            let address = document.createElement('div');
+            let street = document.createElement('p');
+            street.innerText = 'street: ' + res.address.street;
+            let suite = document.createElement('p');
+            suite.innerText = 'suite: ' + res.address.suite;
+            let city = document.createElement('p');
+            city.innerText = 'city: ' + res.address.city;
+            let zipcode = document.createElement('p');
+            zipcode.innerText = 'zipcode: ' + res.address.zipcode;
+            let geo = document.createElement('div');
+            let lat = document.createElement('p');
+            lat.innerText = 'lat: ' + res.address.geo.lat;
+            let lng = document.createElement('p');
+            lng.innerText = 'lng: ' + res.address.geo.lng;
+            geo.append(lat, lng);
+            address.append(street, suite, city, zipcode ,geo);
+
+            let phone = document.createElement('p');
+            phone.innerText = 'phone: ' + res.phone;
+
+            let website = document.createElement('p');
+            website.innerText = 'website: ' + res.website;
+
+            let company = document.createElement('div');
+            let companyName = document.createElement('p');
+            companyName.innerText = 'companyName: ' + res.company.name;
+            let catchPhrase = document.createElement('p');
+            catchPhrase.innerText = 'phrase: ' + res.company.catchPhrase;
+            let companyBs = document.createElement('p');
+            companyBs.innerText = 'bs: ' + res.company.bs;
+            company.append(companyName, catchPhrase, companyBs);
+
+            div.append(h3, username, email, address, phone, website, company);
+
+            let btn = document.createElement('button');
+            btn.innerText = 'post of current user';
+            btn.id = 'btn';
+
+
+
+            div.appendChild(btn)
+
+            let btnDiv = document.createElement('div');
+            wrapper.appendChild(btnDiv);
+
+            btnDiv.id = 'btnDiv'
+            btnDiv.classList.add("show-block")
+
+            btn.onclick = () => {
+              if(btnDiv.classList.contains("show-block")) {
+                btnDiv.classList.remove("show-block");
+              } else {
+                btnDiv.classList.add("show-block");
+              }
+              let titleDivEl = document.querySelector('#titleDiv')
+              console.log(titleDivEl)
+              if (titleDivEl) {
+                return 0;
+              }
+              fetch(`http://jsonplaceholder.typicode.com/users/${id}/posts`)
+                      .then(res => res.json())
+                      .then(el => {
+
+                        let titleDiv = document.createElement('div');
+                        btnDiv.appendChild(titleDiv);
+                        titleDiv.id = 'titleDiv'
+
+                        el.forEach((val) => {
+                          let postDiv = document.createElement('div')
+                          titleDiv.appendChild(postDiv);
+                          postDiv.id = 'postDiv';
+
+                          let h3Title = document.createElement('h3');
+                          h3Title.innerText = `${val.title}`;
+                          postDiv.appendChild(h3Title);
+
+                          let titleBtn = document.createElement('button');
+                          titleBtn.innerText = 'go to post';
+                          titleBtn.onclick = () => window.location.href = `/mini-project/post-details/post-details.html?id=${val.id}`
+                          postDiv.appendChild(titleBtn);
+
+                        })
+
+                      });
+
+            }
+
+          })
+
+</script>
+</body>
+</html>
